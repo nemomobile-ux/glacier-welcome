@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>glacier-welcome.qml</file>
+        <file>pages/WelcomePage.qml</file>
+        <file>components/SayMeHello.qml</file>
+    </qresource>
+</RCC>
