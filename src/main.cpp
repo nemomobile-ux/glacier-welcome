@@ -34,16 +34,20 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QGuiApplication *app = GlacierApp::app(argc, argv);
     app->setOrganizationName("NemoMobile");
 
-    qmlRegisterType<Welcome>("org.glacier.welcome",1,0,"Welcome");
+    Welcome* welcome = new Welcome(app);
+    QTranslator* welcomeTranslator = welcome->getTranslator();
+
 
     QScreen* sc = app->primaryScreen();
-    if(sc){
+    if(sc) {
         sc->setOrientationUpdateMask(Qt::LandscapeOrientation
                                      | Qt::PortraitOrientation
                                      | Qt::InvertedLandscapeOrientation
                                      | Qt::InvertedPortraitOrientation);
     }
 
+    QQmlApplicationEngine engine = GlacierApp::engine();
+    engine.rootContext()->setContextProperty("welcome", welcome);
 
     QQuickWindow *window = GlacierApp::showWindow();
     window->setTitle(QObject::tr("Welcome"));

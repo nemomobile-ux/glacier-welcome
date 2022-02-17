@@ -23,15 +23,14 @@ import QtQuick.Controls 1.0
 import QtQuick.Controls.Nemo 1.0
 import QtQuick.Controls.Styles.Nemo 1.0
 
-import org.glacier.welcome 1.0
-
 import "pages/"
 
 ApplicationWindow {
     id: app
 
-    Welcome{
-        id: welcome
+
+    Component.onCompleted: {
+        welcome.startWelcome()
     }
 
     initialPage: Component {

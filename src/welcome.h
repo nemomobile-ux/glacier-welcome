@@ -21,19 +21,26 @@
 #define WELCOME_H
 
 #include <QDBusInterface>
+#include <QGuiApplication>
 #include <QObject>
+#include <QTranslator>
 
 class Welcome: public QObject
 {
     Q_OBJECT
 public:
-    Welcome();
+    Welcome(QGuiApplication *app);
     Q_INVOKABLE void startWelcome();
     Q_INVOKABLE void endWelcome();
     Q_INVOKABLE bool isFirstRun();
+
+    QTranslator* getTranslator() {return mTranslator;}
+    Q_INVOKABLE void setLanguage(QString language);
+
 private:
     bool m_needToStart;
     QDBusInterface *m_mceDbus;
+    QTranslator* mTranslator;
 };
 
 #endif // WELCOME_H

@@ -32,98 +32,53 @@ import QtQuick 2.6
 import QtQuick.Controls.Nemo 1.0
 import QtQuick.Controls.Styles.Nemo 1.0
 
+import org.nemomobile.systemsettings 1.0
+
 import "../components"
 
 Page {
-    id: welcomePage
+    id: selectLangPage
 
     headerTools: HeaderToolsLayout {
-            id: tools
-            title: "NemoMobile"
+        id: tools
+        title: "NemoMobile"
     }
 
-    Rectangle{
-        id: accentPoint
-        width: Theme.itemHeightLarge
-        height: Theme.itemHeightLarge
-        color: Theme.accentColor
-        radius: (width > height) ? width : height
-
-        visible: false
-
-        Behavior on width{
-            NumberAnimation { duration: 600 }
-        }
-
-        Behavior on height{
-            NumberAnimation { duration: 600 }
-        }
-
-        Behavior on x{
-            id: xMove
-            enabled: false
-            NumberAnimation { duration: 600 }
-        }
-
-        Behavior on y{
-            id: yMove
-            enabled: false
-            NumberAnimation { duration: 600 }
-        }
-
-        Behavior on radius{
-            NumberAnimation { duration: 1200 }
-        }
-
-        onVisibleChanged: {
-            xMove.enabled = true
-            yMove.enabled = true
-            x = 0
-            y = 0
-            radius = 0
-        }
+    LanguageModel{
+        id: languageModel
     }
 
-    Repeater{
-        id: helloRepeater
-        model: SayMeHello{}
-        delegate: Label {
-            id: hiText
-            text: model.text
-            x: Math.random()*parent.width-hiText.width
-            y: Math.random()*parent.height-hiText.height
-            font.pixelSize: Theme.fontSizeTiny
-            color: Theme.fillColor
-        }
-    }
+    ListView{
+        id: languageList
+        width: parent.width
+        height: parent.height
 
-    Label{
-        id: hi
-        anchors.centerIn: parent
-        text: "NemoMobile"
-        font.pixelSize: Theme.fontSizeExtraLarge
-    }
+        model: languageModel
+        delegate: Rectangle{
+            width: parent.width
+            height: Theme.itemHeightLarge
+            color: Theme.backgroundColor
 
-    MouseArea{
-        id: clickArea
-        anchors.fill: parent
-        onClicked: {
-            accentPoint.x = mouse.x
-            accentPoint.y = mouse.y
-            accentPoint.visible = true
-            accentPoint.width = welcomePage.width
-            accentPoint.height = welcomePage.height
-            clickArea.enabled = false
+            Label {
+                color: Theme.textColor
+                text: name
+                anchors{
+                    left: parent.left
+                    leftMargin: Theme.itemSpacingSmall
+                    verticalCenter: parent.verticalCenter
+                }
 
-            nextPageTimer.start();
-        }
-    }
+                font.pixelSize: Theme.fontSizeMedium
+                clip: true
+            }
 
-    Timer{
-        id: nextPageTimer
-        interval: 1200
-        onTriggered: {
-            pageStack.push(Qt.resolvedUrl("SelectLanguagePage.qml"))
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    languageModel.setSystemLocale(locale, LanguageModel.UpdateWithoutReboot)
+                    pageStack.push(Qt.resolvedUrl("DateTimePage.qml"))
+                }
+            }
         }
     }
 }

@@ -24,17 +24,35 @@
 #include <QDebug>
 #include <QStandardPaths>
 
-Welcome::Welcome()
+Welcome::Welcome(QGuiApplication *app)
+    : mTranslator(new QTranslator())
 {
     QFile doneFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.glacerWelcomeDone");
     m_needToStart = !doneFile.exists();
-    qDebug() << QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.glacerWelcomeDone";
     m_mceDbus = new QDBusInterface("com.nokia.mce", "/com/nokia/mce/request", "com.nokia.mce.request", QDBusConnection::systemBus());
 }
 
 bool Welcome::isFirstRun()
 {
     return m_needToStart;
+}
+
+void Welcome::setLanguage(QString language)
+{
+    if (mTranslator->load(language,
+                          QLatin1String("welcome-home"),
+                          QLatin1String("_"), QLatin1String("/usr/share/glacier-welcome/translations/"))) {
+
+        qDebug() << "translation.load() success" << language;
+
+        if (qApp->installTranslator(mTranslator)) {
+            qDebug() << "installTranslator() success" << language;
+        } else {
+            qDebug() << "installTranslator() failed" << language;
+        }
+    } else {
+        qDebug() << "translation.load() failed" << language;
+    }
 }
 
 void Welcome::startWelcome()
