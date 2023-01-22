@@ -20,14 +20,14 @@
 #include "welcome.h"
 #include <QDBusPendingCall>
 #include <QDBusVariant>
-#include <QFile>
 #include <QDebug>
+#include <QFile>
 #include <QStandardPaths>
 
-Welcome::Welcome(QGuiApplication *app)
+Welcome::Welcome(QGuiApplication* app)
     : mTranslator(new QTranslator())
 {
-    QFile doneFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.glacerWelcomeDone");
+    QFile doneFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.glacerWelcomeDone");
     m_needToStart = !doneFile.exists();
     m_mceDbus = new QDBusInterface("com.nokia.mce", "/com/nokia/mce/request", "com.nokia.mce.request", QDBusConnection::systemBus());
 }
@@ -40,8 +40,8 @@ bool Welcome::isFirstRun()
 void Welcome::setLanguage(QString language)
 {
     if (mTranslator->load(language,
-                          QLatin1String("welcome-home"),
-                          QLatin1String("_"), QLatin1String("/usr/share/glacier-welcome/translations/"))) {
+            QLatin1String("welcome-home"),
+            QLatin1String("_"), QLatin1String("/usr/share/glacier-welcome/translations/"))) {
 
         qDebug() << "translation.load() success" << language;
 
@@ -68,7 +68,7 @@ void Welcome::endWelcome()
     m_mceDbus->asyncCall("req_tklock_mode_change", "locked");
     m_mceDbus->asyncCall("set_config", QDBusObjectPath("/system/osso/dsm/locks/tklock_blank_disable").path(), QVariant::fromValue(QDBusVariant(0)));
 
-    QFile doneFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.glacerWelcomeDone");
+    QFile doneFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.glacerWelcomeDone");
     doneFile.open(QIODevice::WriteOnly);
     doneFile.close();
 }
